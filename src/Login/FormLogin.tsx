@@ -4,44 +4,44 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 interface IFormData {
-	username: string, 
-	password: string, 
-	recaptchaToken?: string|null
+	username: string;
+	password: string;
+	recaptchaToken?: string | null;
 }
 
 const FormLogin: FC = () => {
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const [isLogged, setIsLogged] = useState(false);
 	const [formData, setFormData] = useState<IFormData>({
-		username: '',
-		password: '',
+		username: "",
+		password: "",
 		recaptchaToken: null,
 	});
 
 	useEffect(() => {
-    if (!formData.recaptchaToken) {
-      return;
-    }
-		console.log(formData.recaptchaToken);
-		axios.post(
-			"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
-			formData,
-			{ headers: { Accept: "application/json" } }
-		)
-		.then(function (response) {
-			setFormData({
-				username: '',
-				password: '',
-				recaptchaToken: null,
+		if (!formData.recaptchaToken) {
+			return;
+		}
+		axios
+			.post(
+				"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
+				formData,
+				{ headers: { Accept: "application/json" } }
+			)
+			.then(function (response) {
+				setFormData({
+					username: "",
+					password: "",
+					recaptchaToken: null,
+				});
+				if (response.status === 201) {
+					setIsLogged(true);
+				}
 			})
-			if(response.status === 201) {
-				setIsLogged(true);
-			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
-  }, [formData, formData.recaptchaToken]);
+			.catch(function (error) {
+				console.log(error);
+			});
+	}, [formData, formData.recaptchaToken]);
 
 	const getTokenCaptcha = useCallback(async () => {
 		if (!executeRecaptcha) {
@@ -52,15 +52,14 @@ const FormLogin: FC = () => {
 			await executeRecaptcha().then((res) => {
 				setFormData({
 					...formData,
-					recaptchaToken: res
+					recaptchaToken: res,
 				});
-			})
+			});
 		} catch (error) {
 			console.log(error);
 		}
-    
-	}, [executeRecaptcha, formData])
-	
+	}, [executeRecaptcha, formData]);
+
 	const onFinish = async () => {
 		getTokenCaptcha();
 	};
@@ -69,7 +68,7 @@ const FormLogin: FC = () => {
 		const value = e.target.value;
 		setFormData({
 			...formData,
-			username: value
+			username: value,
 		});
 	};
 
@@ -77,9 +76,9 @@ const FormLogin: FC = () => {
 		const value = e.target.value;
 		setFormData({
 			...formData,
-			password: value
+			password: value,
 		});
-	}
+	};
 
 	if (isLogged) return <h1>Đã đăng nhập</h1>;
 
@@ -100,7 +99,10 @@ const FormLogin: FC = () => {
 					name="username"
 					rules={[{ required: true, message: "Please input your username!" }]}
 				>
-					<Input value={formData.username} onChange={(e) => handleChangeUserName(e)} />
+					<Input
+						value={formData.username}
+						onChange={(e) => handleChangeUserName(e)}
+					/>
 				</Form.Item>
 
 				<Form.Item
