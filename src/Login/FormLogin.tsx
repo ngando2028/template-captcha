@@ -24,7 +24,7 @@ const FormLogin: FC = () => {
     }
 		console.log(formData.recaptchaToken);
 		axios.post(
-			"http://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
+			"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
 			formData,
 			{ headers: { Accept: "application/json" } }
 		)
