@@ -6,55 +6,55 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 const FormLogin: FC = () => {
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const [isLogged, setIsLogged] = useState(false);
-	const [token, setToken] = useState('');
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
+	const [token, setToken] = useState("");
+	const [username, setUsername] = useState("");
+	const [password, setPassword] = useState("");
 
 	useEffect(() => {
-    if (!token) {
-      return;
-    }
+		if (!token) {
+			return;
+		}
 
 		const formData = {
 			username,
 			password,
-			recaptchaToken: token
-		}
-		axios.post(
-			"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
-			formData,
-			{ headers: { Accept: "application/json" } }
-		)
-		.then(function (response) {
-			setUsername('');
-			setPassword('');
-			setToken('');
-			if(response.status === 201) {
-				setIsLogged(true);
-			}
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
-  }, [token]);
+			recaptchaToken: token,
+		};
+		axios
+			.post(
+				"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
+				formData,
+				{ headers: { Accept: "application/json" } }
+			)
+			.then(function (response) {
+				setUsername("");
+				setPassword("");
+				setToken("");
+				if (response.status === 201) {
+					setIsLogged(true);
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}, [token]);
 
 	const getTokenCaptcha = useCallback(async () => {
 		if (!executeRecaptcha) {
-      console.log('Execute recaptcha not yet available');
-      return;
-    }
+			console.log("Execute recaptcha not yet available");
+			return;
+		}
 		try {
 			await executeRecaptcha().then((res) => {
 				setToken(res);
-			})
+			});
 		} catch (error) {
 			console.log(error);
 		}
-    
-	}, [executeRecaptcha])
-	
+	}, [executeRecaptcha]);
+
 	const onFinish = async () => {
-		getTokenCaptcha()
+		getTokenCaptcha();
 	};
 
 	const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,10 +64,10 @@ const FormLogin: FC = () => {
 
 	const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setPassword(value); 
-	}
+		setPassword(value);
+	};
 
-	if(isLogged) return <h1>Đã đăng nhập</h1>
+	if (isLogged) return <h1>Đã đăng nhập</h1>;
 
 	return (
 		<div className="login-form">
