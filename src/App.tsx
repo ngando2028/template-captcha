@@ -1,7 +1,7 @@
 import React from "react";
 import "antd/dist/antd.css";
 import "./App.css";
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import FormLogin from "./Login/FormLogin";
 
 

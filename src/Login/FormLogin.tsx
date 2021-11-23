@@ -59,8 +59,8 @@ const FormLogin: FC = () => {
 
 	const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setUsername(value); 
-	}
+		setUsername(value);
+	};
 
 	const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
@@ -86,10 +86,7 @@ const FormLogin: FC = () => {
 					name="username"
 					rules={[{ required: true, message: "Please input your username!" }]}
 				>
-					<Input 
-						value={username}
-						onChange={(e) => handleChangeUserName(e)}
-					/>
+					<Input value={username} onChange={(e) => handleChangeUserName(e)} />
 				</Form.Item>
 
 				<Form.Item
@@ -97,7 +94,7 @@ const FormLogin: FC = () => {
 					name="password"
 					rules={[{ required: true, message: "Please input your password!" }]}
 				>
-					<Input.Password 
+					<Input.Password
 						value={password}
 						onChange={(e) => handleChangePassword(e)}
 					/>
