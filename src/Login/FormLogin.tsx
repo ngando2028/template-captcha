@@ -19,7 +19,7 @@ const FormLogin: FC = () => {
 			};
 			axios
 				.post(
-					"https://nestjs-assignment-2021.herokuapp.com/api/auth/loginRecaptcha",
+					"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
 					formData,
 					{ headers: { Accept: "application/json" } }
 				)
