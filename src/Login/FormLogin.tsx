@@ -3,32 +3,36 @@ import axios from "axios";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
+interface IFormData {
+	username: string, 
+	password: string, 
+	recaptchaToken?: string|null
+}
+
 const FormLogin: FC = () => {
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const [isLogged, setIsLogged] = useState(false);
-	const [token, setToken] = useState('');
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
+	const [formData, setFormData] = useState<IFormData>({
+		username: '',
+		password: '',
+		recaptchaToken: null,
+	});
 
 	useEffect(() => {
-    if (!token) {
+    if (!formData.recaptchaToken) {
       return;
     }
-
-		const formData = {
-			username,
-			password,
-			recaptchaToken: token
-		}
 		axios.post(
 			"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
 			formData,
 			{ headers: { Accept: "application/json" } }
 		)
 		.then(function (response) {
-			setUsername('');
-			setPassword('');
-			setToken('');
+			setFormData({
+				username: '',
+				password: '',
+				recaptchaToken: null,
+			})
 			if(response.status === 201) {
 				setIsLogged(true);
 			}
@@ -36,7 +40,7 @@ const FormLogin: FC = () => {
 		.catch(function (error) {
 			console.log(error);
 		});
-  }, [token]);
+  }, [formData, formData.recaptchaToken]);
 
 	const getTokenCaptcha = useCallback(async () => {
 		if (!executeRecaptcha) {
@@ -45,13 +49,16 @@ const FormLogin: FC = () => {
     }
 		try {
 			await executeRecaptcha().then((res) => {
-				setToken(res);
+				setFormData({
+					...formData,
+					recaptchaToken: res
+				});
 			})
 		} catch (error) {
 			console.log(error);
 		}
     
-	}, [executeRecaptcha])
+	}, [executeRecaptcha, formData])
 	
 	const onFinish = async () => {
 		getTokenCaptcha()
@@ -59,12 +66,18 @@ const FormLogin: FC = () => {
 
 	const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setUsername(value);
+		setFormData({
+			...formData,
+			username: value
+		});
 	};
 
 	const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setPassword(value); 
+		setFormData({
+			...formData,
+			password: value
+		});
 	}
 
 	if(isLogged) return <h1>Đã đăng nhập</h1>
@@ -86,7 +99,7 @@ const FormLogin: FC = () => {
 					name="username"
 					rules={[{ required: true, message: "Please input your username!" }]}
 				>
-					<Input value={username} onChange={(e) => handleChangeUserName(e)} />
+					<Input value={formData.username} onChange={(e) => handleChangeUserName(e)} />
 				</Form.Item>
 
 				<Form.Item
@@ -95,7 +108,7 @@ const FormLogin: FC = () => {
 					rules={[{ required: true, message: "Please input your password!" }]}
 				>
 					<Input.Password
-						value={password}
+						value={formData.password}
 						onChange={(e) => handleChangePassword(e)}
 					/>
 				</Form.Item>
