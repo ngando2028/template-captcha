@@ -44,9 +44,9 @@ const FormLogin: FC = () => {
 
 	const getTokenCaptcha = useCallback(async () => {
 		if (!executeRecaptcha) {
-      console.log('Execute recaptcha not yet available');
-      return;
-    }
+			console.log("Execute recaptcha not yet available");
+			return;
+		}
 		try {
 			await executeRecaptcha().then((res) => {
 				setFormData({
@@ -61,7 +61,7 @@ const FormLogin: FC = () => {
 	}, [executeRecaptcha, formData])
 	
 	const onFinish = async () => {
-		getTokenCaptcha()
+		getTokenCaptcha();
 	};
 
 	const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +80,7 @@ const FormLogin: FC = () => {
 		});
 	}
 
-	if(isLogged) return <h1>Đã đăng nhập</h1>
+	if (isLogged) return <h1>Đã đăng nhập</h1>;
 
 	return (
 		<div className="login-form">
