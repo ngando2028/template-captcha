@@ -11,7 +11,7 @@ function App() {
 		<div className="App">
 			<GoogleReCaptchaProvider
 				useRecaptchaNet
-				reCaptchaKey="6LcJCk8dAAAAAHHaH_kRwhK9_m-xG0OiNdTz6B2N"
+				reCaptchaKey="6Ldsfk8dAAAAAA8KoF9rJ5Hix3hsqxxRi55OnSh9"
 				scriptProps={{ async: false, defer: false, appendTo: 'head' }}
 			>
 				<FormLogin />
