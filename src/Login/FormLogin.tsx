@@ -1,28 +1,40 @@
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button } from "antd";
 import axios from "axios";
-import { FC, useState } from "react";
-import { GoogleReCaptcha } from "react-google-recaptcha-v3";
+import { FC, useCallback, useEffect, useState } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const FormLogin: FC = () => {
 	const [isLogged, setIsLogged] = useState(false);
 	const [token, setToken] = useState("");
-	const [checked, setChecked] = useState(false);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
+	const { executeRecaptcha } = useGoogleReCaptcha();
+
+	const handleReCaptchaVerify = useCallback(async () => {
+		if (!executeRecaptcha) {
+			return;
+		}
+
+		const token = await executeRecaptcha("SignIn");
+		setToken(token);
+	}, [executeRecaptcha]);
+
+	useEffect(() => {
+		handleReCaptchaVerify();
+	}, [handleReCaptchaVerify]);
+
 	const onFinish = (values: any) => {
-		if (checked) {
+		if (token) {
 			const formData = {
 				username,
 				password,
 				recaptchaToken: token,
 			};
 			axios
-				.post(
-					"https://assignment-nestjs-api.herokuapp.com/api/auth/loginRecaptcha",
-					formData,
-					{ headers: { Accept: "application/json" } }
-				)
+				.post("http://localhost:3000/api/auth/loginRecaptcha", formData, {
+					headers: { Accept: "application/json" },
+				})
 				.then(function (response) {
 					console.log(response);
 					setUsername("");
@@ -36,7 +48,7 @@ const FormLogin: FC = () => {
 					console.log(error);
 				});
 		} else {
-			alert("Vui lòng click Verify");
+			alert("Doi xiu di nao!");
 		}
 	};
 
@@ -48,10 +60,6 @@ const FormLogin: FC = () => {
 	const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setPassword(value);
-	};
-
-	const handleChangeCheck = () => {
-		setChecked(!checked);
 	};
 
 	if (isLogged) return <h1>Đã đăng nhập</h1>;
@@ -84,17 +92,6 @@ const FormLogin: FC = () => {
 					<Input.Password
 						value={password}
 						onChange={(e) => handleChangePassword(e)}
-					/>
-				</Form.Item>
-
-				<Form.Item valuePropName="checked" wrapperCol={{ offset: 4, span: 16 }}>
-					<Checkbox onChange={handleChangeCheck} checked={checked}>
-						Verify
-					</Checkbox>
-					<GoogleReCaptcha
-						onVerify={(token) => {
-							setToken(token);
-						}}
 					/>
 				</Form.Item>
 
